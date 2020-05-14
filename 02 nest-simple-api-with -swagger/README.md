@@ -26,89 +26,62 @@
 
 ## Beschreibung
 
-[Nest](https://github.com/nestjs/nest) ist ein Framework zur Erstellung effizienter und zuverlässiger serverseitiger Anwendungen.
-
-Dazu nutz Nest eine modulare Architektur und die Programmiersprache Typescript von Microsoft&trade;.
+[Swagger](https://swagger.io) ist ein Tool, welches die Arbeit mit API stark vereinfacht.
+Nach der Implementierung bietet der Server unter `//localhost:3000/api` alle verfügbaren API-Schnittstellen an.
 
 ## Installation
 
 ```bash
-$ npm install -g @nestjs/cli
-$ nest -v
+$ npm i @nestjs/swagger swagger-ui-express
 ```
 
-## NestJS Projekt
+## NestJS Projekt anpassen
 
-### Projekt erstellen
-```bash
-# create project
-$ nest new nest-simple-api
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-### Module, Controller, Service
-```bash
-# create module
-$ nest g module tasks
-
-# create controller (without testfiles)
-$ nest g controller tasks --no-spec
-
-# create service (without testfiles)
-$ nest g service tasks --no-spec
-```
-
-Wird ein Module, Controller oder Service erstellt, werden diese automatisch in der `app.module.ts` aufgenommen.
-Es ist jedoch sinnvoll zuerst ein Module zu erstellen. Der erstellte Controller und Service wird dann in dem Module mit integriert.
-
-### DTO (Data Transfer Object)
-Um die Arbeit mit Eingaben und Ausgaben zu vereinfachen, wird ein DTO-Objekt erstellt. Dieses enthält alle zu übertragenden Informationen:
+### Swagger implementieren
+Swagger wird einfach in der `main.ts` zum Server-Startpunkt mit integriert:
 ```typescript
-export class TaskDTO {
-    id: string
-    title: string
-    description: string
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
+async function bootstrap() {
+    const app = await NestFactory.create(AppModule)
+    // Swagger integration
+    const options = new DocumentBuilder()
+        .setTitle('Task API')
+        .setDescription('Task API Description')
+        .setVersion('1.0')
+        .addTag('Task')
+        .build()
+    const document = SwaggerModule.createDocument(app, options)
+    SwaggerModule.setup('api', app, document)
+
+    await app.listen(3000);
 }
 ```
+Allein diese Einstellungen reichen aus, um alle Schnittstellen anzuzeigen.
 
-Um die Typensicherheit zu gewährleisten, ist es sinnvoll neben dem DTO ein Interface zu erstellen.
+### API
+Jeder Controller erhält durch einen eigenen Decorator einen eigenen Abschnitt in Swagger:
 ```typescript
-export interface ITask {
-    id?: string,
-    title: string,
-    description: string
-}
+@ApiTags('tasks') // Swagger Tag Decorator
+```
+Durch dieses werden alle sich darin befindlichen Requests in Swagger zusammengefasst.
+
+Werden an der API Parameter übergeben, so können diese durch den Parameter-Decorator benannt werden.
+```typescript
+@ApiParam({name: 'id'})
+@Get(':id')
 ```
 
-### API (Application Programming Interface)
-Da hier keine Datenbank angesprochen wird, greift die Schnittstelle auf ein Array im Service zu:
+Wird ein Body in Form des DTO übergeben, werden alle Properties mit dem Property-Decorator versehen:
 ```typescript
-Tasks: ITask[] = [
-    { id: '1', title: 'Erster Task', description: 'Das ist der erste Task' },
-    { id: '2', title: 'Zweiter Task', description: 'Das ist der zweite Task' }
-]
-```
+import { ApiProperty } from '@nestjs/swagger'
 
-Das vorgehen ist dabei immer gleich: Der Controller stellt die Schnittstelle zur Verfügung, der Service bindet die Logik zur Verarbeitung.
+export class CreateTaskDto {
+    @ApiProperty()
+    readonly title: string
 
-#### Get-Request
-```typescript
-// Controller
-@Get()
-getTasks(): ITask {
-    return this.tasksService.getTask()
-}
-```
-
-```typescript
-// Service
-getTasks(): ITask[] {
-    return this.Tasks
+    @ApiProperty()
+    readonly author: string
 }
 ```
 

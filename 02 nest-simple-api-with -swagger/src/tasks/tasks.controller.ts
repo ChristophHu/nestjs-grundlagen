@@ -4,7 +4,7 @@ import { ITask } from './task.interface';
 import { TaskDTO } from './dto/task.dto';
 import { ApiTags, ApiParam } from '@nestjs/swagger'
 
-@ApiTags('tasks')
+@ApiTags('tasks') // Swagger Tag Decorator
 @Controller('tasks')
 export class TasksController {
     constructor(private tasksService: TasksService) {}
