@@ -24,21 +24,25 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Beschreibung
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) ist ein Framework zur Erstellung effizienter und zuverlässiger serverseitiger Anwendungen.
+
+Dazu nutz Nest eine modulare Architektur und die Programmiersprache Typescript von Microsoft&trade;.
 
 ## Installation
 
 ```bash
-$ npm install
+$ npm install -g @nestjs/cli
+$ nest -v
 ```
 
-## Running the app
+## NestJS Projekt
 
+### Projekt erstellen
 ```bash
-# development
-$ npm run start
+# create project
+$ nest new nest-simple-api
 
 # watch mode
 $ npm run start:dev
@@ -47,28 +51,66 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
+### Module, Controller, Service
 ```bash
-# unit tests
-$ npm run test
+# create module
+$ nest g module tasks
 
-# e2e tests
-$ npm run test:e2e
+# create controller (without testfiles)
+$ nest g controller tasks --no-spec
 
-# test coverage
-$ npm run test:cov
+# create service (without testfiles)
+$ nest g service tasks --no-spec
 ```
 
-## Support
+Wird ein Module, Controller oder Service erstellt, werden diese automatisch in der `app.module.ts` aufgenommen.
+Es ist jedoch sinnvoll zuerst ein Module zu erstellen. Der erstellte Controller und Service wird dann in dem Module mit integriert.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### DTO (Data Transfer Object)
+Um die Arbeit mit Eingaben und Ausgaben zu vereinfachen, wird ein DTO-Objekt erstellt. Dieses enthält alle zu übertragenden Informationen:
+```typescript
+export class TaskDTO {
+    id: string
+    title: string
+    description: string
+}
+```
 
-## Stay in touch
+Um die Typensicherheit zu gewährleisten, ist es sinnvoll neben dem DTO ein Interface zu erstellen.
+```typescript
+export interface ITask {
+    id?: string,
+    title: string,
+    description: string
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### API (Application Programming Interface)
+Da hier keine Datenbank angesprochen wird, greift die Schnittstelle auf ein Array im Service zu:
+```typescript
+Tasks: ITask[] = [
+    { id: '1', title: 'Erster Task', description: 'Das ist der erste Task' },
+    { id: '2', title: 'Zweiter Task', description: 'Das ist der zweite Task' }
+]
+```
+
+Das vorgehen ist dabei immer gleich: Der Controller stellt die Schnittstelle zur Verfügung, der Service bindet die Logik zur Verarbeitung.
+
+#### Get-Request
+```typescript
+// Controller
+@Get()
+getTasks(): ITask {
+    return this.tasksService.getTask()
+}
+```
+
+```typescript
+// Service
+getTasks(): ITask[] {
+    return this.Tasks
+}
+```
 
 ## License
 
