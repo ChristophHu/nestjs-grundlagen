@@ -2,35 +2,39 @@ import { Injectable } from '@nestjs/common';
 import { ITask } from './task.interface';
 import { TaskDTO } from './dto/task.dto';
 
+import { Model } from 'mongoose'
+import { InjectModel } from '@nestjs/mongoose';
+
 @Injectable()
 export class TasksService {
-    Tasks: ITask[] = [
-        { id: '1', title: 'Erster Task', description: 'Das ist der erste Task' },
-        { id: '2', title: 'Zweiter Task', description: 'Das ist der zweite Task' }
-    ]
+    // Tasks: ITask[] = [
+    //     { id: '1', title: 'Erster Task', description: 'Das ist der erste Task' },
+    //     { id: '2', title: 'Zweiter Task', description: 'Das ist der zweite Task' }
+    // ]
 
-    getTasks(): ITask[] {
-        return this.Tasks
+    constructor(
+        @InjectModel('Task') private readonly taskModel: Model<ITask>) {
     }
 
-    getTask(id: string): ITask {
-        const foundedTask = this.Tasks.find(task => task.id === id)
+    async getTasks(): Promise<ITask[]> {
+        return await this.taskModel.find().exec()
+    }
+
+    async getTask(id: string): Promise<ITask> {
+        const foundedTask = await this.taskModel.findById(id).exec()
         return foundedTask
     }
 
-    createTask(taskDTO: TaskDTO): ITask {
-        this.Tasks.push(taskDTO)
-        return taskDTO
+    async createTask(taskDTO: TaskDTO): Promise<ITask> {
+        const newTask = await this.taskModel(taskDTO)
+        return newTask.save()
     }
 
-    editTask(id: string, taskDTO: TaskDTO): ITask {
-        const foundedTask = this.getTask(id)
-        foundedTask.title = taskDTO.title ? taskDTO.title : foundedTask.title
-        foundedTask.description = taskDTO.description ? taskDTO.description : foundedTask.description
-        return foundedTask
+    async editTask(id: string, taskDTO: TaskDTO): Promise<ITask> {
+        return await this.taskModel.findByIdAndUpdate(id, taskDTO, {new: true})
     }
 
-    deleteTask(id: string) {
-        this.Tasks = this.Tasks.filter(task => task.id !== id)
+    async deleteTask(id: string) {
+        await this.taskModel.findByIdAndRemove(id)
     }
 }
