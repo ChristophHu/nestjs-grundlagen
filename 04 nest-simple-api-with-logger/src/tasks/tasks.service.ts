@@ -17,7 +17,6 @@ export class TasksService {
     }
 
     async getTasks(): Promise<ITask[]> {
-        Logger.log('return all tasks')
         return await this.taskModel.find().exec()
     }
 
