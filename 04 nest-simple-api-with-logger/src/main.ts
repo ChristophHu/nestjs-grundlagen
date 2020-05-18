@@ -15,6 +15,14 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup('api', app, document)
 
+    /*app.use((req, res, next) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Header", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader("Access-Control-Allow-Methodes", "GET, POST, PATCH, DELETE, OPTIONS");
+        next();
+    });*/
+    app.enableCors();
+
     await app.listen(3000);
 }
 bootstrap();
