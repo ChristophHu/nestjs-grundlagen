@@ -1,0 +1,14 @@
+<form clrForm clrLayout="vertical" [formGroup]="form" (submit)="createTask()">
+    <clr-input-container>
+        <label for="title">Titel</label>
+        <input clrInput type="text" formControlName="title">
+        <clr-control-error *clrIfError="'required'">Eingabe erforderlich!</clr-control-error>
+    </clr-input-container>
+
+    <clr-textarea-container>
+        <label for="task">Task</label>
+        <textarea clrTextarea formControlName="task" cols="30" rows="10"></textarea>
+    </clr-textarea-container>
+
+    <button class="btn" type="submit">Task erstellen</button>
+</form>

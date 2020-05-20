@@ -7,13 +7,12 @@ import { TasksService } from './tasks.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    tasks: any = {};
+    tasks: any = [];
 
     constructor(private tasksService: TasksService) {}
 
-    getData() {
-        this.tasksService.getData().subscribe(data => {
-            console.log(data);
+    getTasks() {
+        this.tasksService.getTasks().subscribe(data => {
             this.tasks = data;
         });
     }

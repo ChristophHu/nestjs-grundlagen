@@ -1,4 +1,23 @@
-<button (click)="getData()">GetData()</button>
-<pre>
-    {{ tasks | json }}
-</pre>
+<div class="main-container">
+    <header class="header header-6">
+
+    </header>
+    <div class="content-container">
+        <div class="content-area">
+            <h2>getTasks()</h2>
+            <button class="btn" (click)="getTasks()">Set Cards</button>
+            <div class="clr-row">
+                <div class="clr-col-12 clr-col-sm-4" *ngFor="let task of tasks">
+                    <div class="card">
+                        <div class="card-block">
+                            
+                            <h4 class="card-title">{{ task.title }}</h4>
+                            <p class="card-text">{{ task.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <app-create-task></app-create-task>
+        </div>
+    </div>
+</div>
