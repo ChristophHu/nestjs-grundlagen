@@ -7,7 +7,7 @@
             <h2>getTasks()</h2>
             <button class="btn" (click)="getTasks()">Set Cards</button>
             <div class="clr-row">
-                <div class="clr-col-12 clr-col-sm-4" *ngFor="let task of tasks">
+                <div class="clr-col-12 clr-col-sm-4" *ngFor="let task of tasks | async">
                     <div class="card">
                         <div class="card-block">
                             
