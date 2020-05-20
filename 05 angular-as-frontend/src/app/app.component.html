@@ -4,20 +4,25 @@
     </header>
     <div class="content-container">
         <div class="content-area">
-            <h2>getTasks()</h2>
-            <button class="btn" (click)="getTasks()">Set Cards</button>
             <div class="clr-row">
-                <div class="clr-col-12 clr-col-sm-4" *ngFor="let task of tasks | async">
-                    <div class="card">
-                        <div class="card-block">
-                            
-                            <h4 class="card-title">{{ task.title }}</h4>
-                            <p class="card-text">{{ task.description }}</p>
-                        </div>
-                    </div>
+                <div class="clr-col-md-6 clr-col-12">
+                    <h2>getTasks()</h2>
+                    <clr-accordion>
+                        <clr-accordion-panel *ngFor="let task of tasks | async">
+                        <clr-accordion-title>
+                            <div style="float: left;">{{ task.title }}</div>
+                            <div style="float: right; position: relative; left: 10px;"><clr-icon shape="note"></clr-icon></div>
+                        </clr-accordion-title>
+                        <clr-accordion-content *clrIfExpanded>{{ task.description }}</clr-accordion-content>
+                        </clr-accordion-panel>
+                    </clr-accordion>
+                    <button class="btn" (click)="getTasks()">Set Cards</button>
+                </div>
+                <div class="clr-col-md-6 clr-col-12">
+                    <h2>createTask()</h2>
+                    <app-create-task></app-create-task>
                 </div>
             </div>
-            <app-create-task></app-create-task>
         </div>
     </div>
 </div>
